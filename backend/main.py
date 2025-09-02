@@ -11,7 +11,15 @@ from firebase_admin import credentials, firestore
 # Initialize Flask App and enable CORS
 # Initialize Flask App and enable CORS
 app = Flask(__name__)
-CORS(app, resources={r"/api/*": {"origins": "https://healthcare-pro.netlify.app"}})
+# --- INITIALIZATION ---
+app = Flask(__name__)
+
+# ✅ Allow your Netlify frontend to call the API
+CORS(app, resources={r"/api/*": {"origins": [
+    "https://virtual-clinic-app.netlify.app", 
+    "https://healthcare-pro.netlify.app"
+]}})
+
 # Load environment variables from .env file
 load_dotenv()
 
