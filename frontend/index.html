@@ -3,60 +3,51 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HealthCare Pro - Dashboard</title>
+    <title>HealthCare Pro - Login</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-    <link rel="stylesheet" href="css/style.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; display: flex; justify-content: center; align-items: center; }
+        .auth-container { background: white; padding: 40px; border-radius: 15px; box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1); width: 100%; max-width: 400px; }
+        h2 { text-align: center; margin-bottom: 30px; color: #333; }
+        input { width: 100%; padding: 15px; margin-bottom: 20px; border: 2px solid #e1e5e9; border-radius: 8px; font-size: 16px; }
+        button { width: 100%; padding: 15px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 8px; font-size: 16px; cursor: pointer; }
+        .toggle-text { text-align: center; margin-top: 20px; }
+        .toggle-text a { color: #667eea; text-decoration: none; }
+    </style>
 </head>
 <body>
-    <div class="header">
-        <div class="header-content">
-            <div class="logo"> <i class="fas fa-user-md"></i> <h1>HealthCare Pro</h1> </div>
-            <div class="user-info"> <span>Welcome, <span id="user-email">Loading...</span></span> <button id="logout-button" class="logout-btn"> <i class="fas fa-sign-out-alt"></i> Logout </button> </div>
+    <div class="auth-container">
+        <div id="login-form">
+            <h2>Welcome Back</h2>
+            <input type="email" id="login-email" placeholder="Email Address" required>
+            <input type="password" id="login-password" placeholder="Password" required>
+            <button id="login-button">Login</button>
+            <p class="toggle-text">Don't have an account? <a href="#" id="show-signup">Sign Up</a></p>
         </div>
-    </div>
-
-    <div class="dashboard-container">
-        <div class="dashboard-section">
-            <h3><i class="fas fa-calendar-check"></i> Your Appointments</h3>
-            <div id="appointment-list"> <p class="loading">Loading your appointments...</p> </div>
+        <div id="signup-form" style="display: none;">
+            <h2>Join HealthCare Pro</h2>
+            <input type="email" id="signup-email" placeholder="Email Address" required>
+            <input type="password" id="signup-password" placeholder="Password" required>
+            <button id="signup-button">Sign Up</button>
+            <p class="toggle-text">Already have an account? <a href="#" id="show-login">Login</a></p>
         </div>
-        <div class="dashboard-section">
-            <h3><i class="fas fa-calculator"></i> BMI Calculator</h3>
-            <div class="form-row">
-                <div> <label for="height">Height (cm)</label> <input type="number" id="height" placeholder="e.g., 175"> </div>
-                <div> <label for="weight">Weight (kg)</label> <input type="number" id="weight" placeholder="e.g., 70"> </div>
-            </div>
-            <button id="calculate-bmi-button"> <i class="fas fa-calculator"></i> Calculate BMI </button>
-            <button id="save-profile-button" style="background: #27ae60; margin-top: 10px;"> <i class="fas fa-save"></i> Save Info to Profile </button>
-            <div id="bmi-result" style="display: none;"></div>
-        </div>
-        <div class="dashboard-section">
-            <h3><i class="fas fa-plus-circle"></i> Book New Appointment</h3>
-            <label for="dob">Date of Birth</label> <input type="date" id="dob">
-            <label for="doctor-select">Select Doctor</label>
-            <select id="doctor-select">
-                <option value="Dr. Sarah Johnson (General Physician)">Dr. Sarah Johnson (General Physician)</option>
-                <option value="Dr. Michael Chen (Cardiologist)">Dr. Michael Chen (Cardiologist)</option>
-                <option value="Dr. Emily Rodriguez (Dermatologist)">Dr. Emily Rodriguez (Dermatologist)</option>
-                <option value="Dr. David Kim (Orthopedist)">Dr. David Kim (Orthopedist)</option>
-                <option value="Dr. Lisa Patel (Neurologist)">Dr. Lisa Patel (Neurologist)</option>
-            </select>
-            <label for="symptoms">Describe Your Symptoms</label>
-            <textarea id="symptoms" rows="4" placeholder="Please describe your symptoms..."></textarea>
-            <button id="book-appointment-button"> <i class="fas fa-calendar-plus"></i> Book Appointment </button>
-        </div>
-        <div class="dashboard-section">
-            <h3><i class="fas fa-robot"></i> AI Question Generator</h3>
-            <p style="margin-bottom: 20px; color: #666;">Generate questions to ask your doctor based on your symptoms.</p>
-            <button id="generate-questions-button" disabled> <i class="fas fa-brain"></i> Generate Questions for Doctor </button>
-            <div id="ai-questions" style="display: none;"></div>
-        </div>
+        <p id="error-message" style="color: red; text-align: center; margin-top: 15px;"></p>
     </div>
 
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
-    
-    <script src="js/dashboard.js"></script>
+    <script>
+        const firebaseConfig = { apiKey: "AIzaSyD3R5gxNPpRO2a-GPCTHEwBciaBZGrPD0U", authDomain: "online-doctor-system.firebaseapp.com", projectId: "online-doctor-system", storageBucket: "online-doctor-system.appspot.com", messagingSenderId: "297862158456", appId: "1:297862158456:web:9b763804c4fccd609d758d" };
+        if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
+        const auth = firebase.auth();
+        // Event listeners and logic for login/signup
+        document.getElementById('login-button').addEventListener('click', () => auth.signInWithEmailAndPassword(document.getElementById('login-email').value, document.getElementById('login-password').value).catch(err => document.getElementById('error-message').textContent = err.message));
+        document.getElementById('signup-button').addEventListener('click', () => auth.createUserWithEmailAndPassword(document.getElementById('signup-email').value, document.getElementById('signup-password').value).catch(err => document.getElementById('error-message').textContent = err.message));
+        document.getElementById('show-signup').addEventListener('click', () => { document.getElementById('login-form').style.display = 'none'; document.getElementById('signup-form').style.display = 'block'; });
+        document.getElementById('show-login').addEventListener('click', () => { document.getElementById('login-form').style.display = 'block'; document.getElementById('signup-form').style.display = 'none'; });
+        // The redirect logic
+        auth.onAuthStateChanged(user => { if (user) { window.location.href = 'dashboard.html'; } });
+    </script>
 </body>
 </html>

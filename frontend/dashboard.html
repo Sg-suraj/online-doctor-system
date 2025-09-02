@@ -5,58 +5,184 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HealthCare Pro - Dashboard</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-    <link rel="stylesheet" href="css/style.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', sans-serif; background: #f8f9fa; color: #333; line-height: 1.6; }
+        .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px 0; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); }
+        .header-content { max-width: 1200px; margin: 0 auto; padding: 0 20px; display: flex; justify-content: space-between; align-items: center; }
+        .logo { display: flex; align-items: center; gap: 10px; }
+        .logo i { font-size: 28px; }
+        .logo h1 { font-size: 24px; font-weight: 300; }
+        .user-info { display: flex; align-items: center; gap: 15px; }
+        .dashboard-container { max-width: 1200px; margin: 30px auto; padding: 0 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
+        .dashboard-section { background: white; padding: 30px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08); }
+        .dashboard-section h3 { color: #333; margin-bottom: 20px; font-size: 20px; display: flex; align-items: center; gap: 10px; }
+        .dashboard-section h3 i { color: #667eea; }
+        input, select, textarea { width: 100%; padding: 12px 15px; margin-bottom: 15px; border: 2px solid #e1e5e9; border-radius: 8px; font-size: 14px; }
+        button { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; padding: 12px 25px; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: 500; display: inline-flex; align-items: center; gap: 8px; }
+        button:disabled { background: #ccc; cursor: not-allowed; }
+        .logout-btn { background: #e74c3c; }
+        .appointment-card { border: 1px solid #e1e5e9; padding: 20px; margin-bottom: 15px; border-radius: 10px; background: #fafafa; }
+        #ai-questions { background: #f8f9fa; padding: 20px; border-radius: 10px; margin-top: 15px; border-left: 4px solid #667eea; }
+        .loading { text-align: center; color: #666; font-style: italic; }
+        label { display: block; margin-bottom: 5px; font-weight: 500; color: #555; }
+    </style>
 </head>
 <body>
-    <div class="header">
-        <div class="header-content">
-            <div class="logo"> <i class="fas fa-user-md"></i> <h1>HealthCare Pro</h1> </div>
-            <div class="user-info"> <span>Welcome, <span id="user-email">Loading...</span></span> <button id="logout-button" class="logout-btn"> <i class="fas fa-sign-out-alt"></i> Logout </button> </div>
-        </div>
+    <div id="loader" style="display: flex; justify-content: center; align-items: center; height: 100vh;">
+        <h1><i class="fas fa-spinner fa-spin"></i> Authenticating...</h1>
     </div>
 
-    <div class="dashboard-container">
-        <div class="dashboard-section">
-            <h3><i class="fas fa-calendar-check"></i> Your Appointments</h3>
-            <div id="appointment-list"> <p class="loading">Loading your appointments...</p> </div>
-        </div>
-        <div class="dashboard-section">
-            <h3><i class="fas fa-calculator"></i> BMI Calculator</h3>
-            <div class="form-row">
-                <div> <label for="height">Height (cm)</label> <input type="number" id="height" placeholder="e.g., 175"> </div>
-                <div> <label for="weight">Weight (kg)</label> <input type="number" id="weight" placeholder="e.g., 70"> </div>
+    <main id="app-content" style="display: none;">
+        <div class="header">
+            <div class="header-content">
+                <div class="logo"> <i class="fas fa-user-md"></i> <h1>HealthCare Pro</h1> </div>
+                <div class="user-info"> <span>Welcome, <span id="user-email">...</span></span> <button id="logout-button" class="logout-btn"> <i class="fas fa-sign-out-alt"></i> Logout </button> </div>
             </div>
-            <button id="calculate-bmi-button"> <i class="fas fa-calculator"></i> Calculate BMI </button>
-            <button id="save-profile-button" style="background: #27ae60; margin-top: 10px;"> <i class="fas fa-save"></i> Save Info to Profile </button>
-            <div id="bmi-result" style="display: none;"></div>
         </div>
-        <div class="dashboard-section">
-            <h3><i class="fas fa-plus-circle"></i> Book New Appointment</h3>
-            <label for="dob">Date of Birth</label> <input type="date" id="dob">
-            <label for="doctor-select">Select Doctor</label>
-            <select id="doctor-select">
-                <option value="Dr. Sarah Johnson (General Physician)">Dr. Sarah Johnson (General Physician)</option>
-                <option value="Dr. Michael Chen (Cardiologist)">Dr. Michael Chen (Cardiologist)</option>
-                <option value="Dr. Emily Rodriguez (Dermatologist)">Dr. Emily Rodriguez (Dermatologist)</option>
-                <option value="Dr. David Kim (Orthopedist)">Dr. David Kim (Orthopedist)</option>
-                <option value="Dr. Lisa Patel (Neurologist)">Dr. Lisa Patel (Neurologist)</option>
-            </select>
-            <label for="symptoms">Describe Your Symptoms</label>
-            <textarea id="symptoms" rows="4" placeholder="Please describe your symptoms..."></textarea>
-            <button id="book-appointment-button"> <i class="fas fa-calendar-plus"></i> Book Appointment </button>
+        <div class="dashboard-container">
+            <div class="dashboard-section">
+                <h3><i class="fas fa-calendar-check"></i> Your Appointments</h3>
+                <div id="appointment-list"><p class="loading">Loading...</p></div>
+            </div>
+            <div class="dashboard-section">
+                <h3><i class="fas fa-plus-circle"></i> Book New Appointment</h3>
+                <label for="dob">Date of Birth</label> <input type="date" id="dob">
+                <label for="doctor-select">Select Doctor</label>
+                <select id="doctor-select">
+                    <option value="Dr. A (General Physician)">Dr. A (General Physician)</option>
+                    <option value="Dr. B (Cardiologist)">Dr. B (Cardiologist)</option>
+                    <option value="Dr. C (Dermatologist)">Dr. C (Dermatologist)</option>
+                    <option value="Dr. D (Orthopedist)">Dr. D (Orthopedist)</option>
+                    <option value="Dr. E (Neurologist)">Dr. E (Neurologist)</option>
+                </select>
+                <label for="symptoms">Describe Your Symptoms</label>
+                <textarea id="symptoms" rows="4" placeholder="Please describe your symptoms..."></textarea>
+                <button id="book-appointment-button"> <i class="fas fa-calendar-plus"></i> Book Appointment </button>
+            </div>
+            <div class="dashboard-section">
+                <h3><i class="fas fa-robot"></i> AI Question Generator</h3>
+                <p style="margin-bottom: 20px; color: #666;">After booking, generate questions to ask your doctor.</p>
+                <button id="generate-questions-button" disabled> <i class="fas fa-brain"></i> Generate Questions </button>
+                <div id="ai-questions" style="display: none;"></div>
+            </div>
         </div>
-        <div class="dashboard-section">
-            <h3><i class="fas fa-robot"></i> AI Question Generator</h3>
-            <p style="margin-bottom: 20px; color: #666;">Generate questions to ask your doctor based on your symptoms.</p>
-            <button id="generate-questions-button" disabled> <i class="fas fa-brain"></i> Generate Questions for Doctor </button>
-            <div id="ai-questions" style="display: none;"></div>
-        </div>
-    </div>
+    </main>
 
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
-    
-    <script src="js/dashboard.js"></script>
+    <script>
+        const firebaseConfig = { apiKey: "AIzaSyD3R5gxNPpRO2a-GPCTHEwBciaBZGrPD0U", authDomain: "online-doctor-system.firebaseapp.com", projectId: "online-doctor-system", storageBucket: "online-doctor-system.appspot.com", messagingSenderId: "297862158456", appId: "1:297862158456:web:9b763804c4fccd609d758d" };
+        if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+
+        const loader = document.getElementById('loader');
+        const appContent = document.getElementById('app-content');
+        const userEmailSpan = document.getElementById('user-email');
+        const logoutButton = document.getElementById('logout-button');
+        const dobInput = document.getElementById('dob');
+        const doctorSelect = document.getElementById('doctor-select');
+        const symptomsTextarea = document.getElementById('symptoms');
+        const bookAppointmentButton = document.getElementById('book-appointment-button');
+        const generateQuestionsButton = document.getElementById('generate-questions-button');
+        const aiQuestionsDiv = document.getElementById('ai-questions');
+        const appointmentListDiv = document.getElementById('appointment-list');
+        
+        let currentUser = null;
+        let lastAppointmentData = null;
+
+        auth.onAuthStateChanged(user => {
+            if (user) {
+                currentUser = user;
+                userEmailSpan.textContent = user.email;
+                loader.style.display = 'none';
+                appContent.style.display = 'block';
+                loadAppointments();
+            } else {
+                window.location.href = 'index.html';
+            }
+        });
+
+        function loadAppointments() {
+            if (!currentUser) return;
+            db.collection('appointments').where('userId', '==', currentUser.uid).orderBy('bookingTime', 'desc').get()
+                .then(querySnapshot => {
+                    let html = '';
+                    if (querySnapshot.empty) {
+                        html = '<p>No appointments booked.</p>';
+                    } else {
+                        querySnapshot.forEach(doc => {
+                            const appt = doc.data();
+                            const apptDate = appt.bookingTime.toDate().toLocaleDateString();
+                            html += `<div class="appointment-card">
+                                <p><strong>Doctor:</strong> ${appt.doctor}</p>
+                                <p><strong>Symptoms:</strong> ${appt.symptoms}</p>
+                                <p style="font-size:12px;color:#777;">Booked on: ${apptDate}</p>
+                            </div>`;
+                        });
+                    }
+                    appointmentListDiv.innerHTML = html;
+                });
+        }
+
+        logoutButton.addEventListener('click', () => auth.signOut());
+
+        bookAppointmentButton.addEventListener('click', () => {
+            if (!currentUser) return;
+            const appointmentData = { userId: currentUser.uid, doctor: doctorSelect.value, symptoms: symptomsTextarea.value, bookingTime: new Date(), userAge: new Date().getFullYear() - new Date(dobInput.value).getFullYear() };
+            if (!dobInput.value || !symptomsTextarea.value) { alert("Please fill all appointment fields."); return; }
+            
+            db.collection('appointments').add(appointmentData).then(() => {
+                symptomsTextarea.value = '';
+                lastAppointmentData = appointmentData;
+                generateQuestionsButton.disabled = false;
+                loadAppointments();
+                alert("Appointment booked successfully!");
+            });
+        });
+
+        // --- THIS IS THE IMPROVED AND FINAL VERSION OF THE AI FUNCTION ---
+        generateQuestionsButton.addEventListener('click', () => {
+            if (!lastAppointmentData) return;
+            
+            aiQuestionsDiv.style.display = 'block';
+            aiQuestionsDiv.innerHTML = '<p class="loading"><i class="fas fa-spinner fa-spin"></i> Generating AI questions...</p>';
+            generateQuestionsButton.disabled = true; // Disable button while loading
+
+            fetch('https://healthcare-pro-backend-y8u5.onrender.com/api/generate-summary', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(lastAppointmentData)
+            })
+            .then(response => {
+                if (!response.ok) {
+                    // If response is not 2xx, throw an error to be caught by .catch()
+                    throw new Error(`Server responded with status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data && data.summary) {
+                    // Success! Display the summary from the AI
+                    aiQuestionsDiv.innerHTML = data.summary.replace(/\*\*/g, '<strong>').replace(/\*/g, '</strong>');
+                } else {
+                    // Handle cases where the server sent an error message in JSON
+                    aiQuestionsDiv.innerHTML = `<p style="color: red;">The AI generator failed. Please check the backend logs for details.</p>`;
+                    console.error("Server returned an error:", data);
+                }
+            })
+            .catch(error => {
+                // This catches network errors and the thrown error from a bad response status
+                aiQuestionsDiv.innerHTML = `<p style="color: red;">Error connecting to the server. It may be waking up. Please try again in a moment.</p>`;
+                console.error("Fetch Error:", error);
+            })
+            .finally(() => {
+                // Re-enable the button whether it succeeded or failed
+                generateQuestionsButton.disabled = false;
+            });
+        });
+    </script>
 </body>
 </html>
