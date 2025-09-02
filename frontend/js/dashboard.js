@@ -1,6 +1,6 @@
 // Firebase configuration
 const firebaseConfig = {
-    apiKey: "AIzaSyD3R5gxNPpRO2a-GPCTHEwBciaBZGrPD0U",
+    
     authDomain: "online-doctor-system.firebaseapp.com",
     projectId: "online-doctor-system",
     storageBucket: "online-doctor-system.appspot.com",
