@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HealthCare Pro - Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="header">
+        <div class="header-content">
+            <div class="logo"> <i class="fas fa-user-md"></i> <h1>HealthCare Pro</h1> </div>
+            <div class="user-info"> <span>Welcome, <span id="user-email">Loading...</span></span> <button id="logout-button" class="logout-btn"> <i class="fas fa-sign-out-alt"></i> Logout </button> </div>
+        </div>
+    </div>
+
+    <div class="dashboard-container">
+        <div class="dashboard-section">
+            <h3><i class="fas fa-calendar-check"></i> Your Appointments</h3>
+            <div id="appointment-list"> <p class="loading">Loading your appointments...</p> </div>
+        </div>
+        <div class="dashboard-section">
+            <h3><i class="fas fa-calculator"></i> BMI Calculator</h3>
+            <div class="form-row">
+                <div> <label for="height">Height (cm)</label> <input type="number" id="height" placeholder="e.g., 175"> </div>
+                <div> <label for="weight">Weight (kg)</label> <input type="number" id="weight" placeholder="e.g., 70"> </div>
+            </div>
+            <button id="calculate-bmi-button"> <i class="fas fa-calculator"></i> Calculate BMI </button>
+            <button id="save-profile-button" style="background: #27ae60; margin-top: 10px;"> <i class="fas fa-save"></i> Save Info to Profile </button>
+            <div id="bmi-result" style="display: none;"></div>
+        </div>
+        <div class="dashboard-section">
+            <h3><i class="fas fa-plus-circle"></i> Book New Appointment</h3>
+            <label for="dob">Date of Birth</label> <input type="date" id="dob">
+            <label for="doctor-select">Select Doctor</label>
+            <select id="doctor-select">
+                <option value="Dr. Sarah Johnson (General Physician)">Dr. Sarah Johnson (General Physician)</option>
+                <option value="Dr. Michael Chen (Cardiologist)">Dr. Michael Chen (Cardiologist)</option>
+                <option value="Dr. Emily Rodriguez (Dermatologist)">Dr. Emily Rodriguez (Dermatologist)</option>
+                <option value="Dr. David Kim (Orthopedist)">Dr. David Kim (Orthopedist)</option>
+                <option value="Dr. Lisa Patel (Neurologist)">Dr. Lisa Patel (Neurologist)</option>
+            </select>
+            <label for="symptoms">Describe Your Symptoms</label>
+            <textarea id="symptoms" rows="4" placeholder="Please describe your symptoms..."></textarea>
+            <button id="book-appointment-button"> <i class="fas fa-calendar-plus"></i> Book Appointment </button>
+        </div>
+        <div class="dashboard-section">
+            <h3><i class="fas fa-robot"></i> AI Question Generator</h3>
+            <p style="margin-bottom: 20px; color: #666;">Generate questions to ask your doctor based on your symptoms.</p>
+            <button id="generate-questions-button" disabled> <i class="fas fa-brain"></i> Generate Questions for Doctor </button>
+            <div id="ai-questions" style="display: none;"></div>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+    
+    <script src="js/dashboard.js"></script>
+</body>
+</html>
