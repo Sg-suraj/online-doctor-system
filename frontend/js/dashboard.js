@@ -97,7 +97,7 @@ generateQuestionsButton.addEventListener('click', () => {
     }
     aiQuestionsDiv.style.display = 'block';
     aiQuestionsDiv.innerHTML = '<p class="loading">Generating AI questions...</p>';
-    fetch('http://127.0.0.1:5000/api/generate-summary', {
+    fetch('https://healthcare-pro-backend-y8u5.onrender.com/api/generate-summary', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(lastAppointmentData)
