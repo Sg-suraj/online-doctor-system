@@ -1,8 +1,5 @@
 HealthCare Pro - Your Personal Appointment Assistant
 
-https://virtual-clinic-app.netlify.app/
-
-
 An intelligent, full-stack application designed to empower patients by helping them prepare for their medical consultations.
 
 From Concept to Cloud: A Full-Stack Health Application
@@ -33,3 +30,6 @@ Backend: A Python Flask API that serves as the brain, handling business logic an
 Database & Authentication: Firebase serves as the backend-as-a-service, managing user accounts with Firebase Authentication and storing data in Firestore.
 
 Deployment: The application is deployed with a CI/CD pipeline from GitHub to Netlify (frontend) and Render (backend).
+
+---
+© 2025 Suraj Kumar. All Rights Reserved.
