@@ -1,6 +1,6 @@
 HealthCare Pro - Your Personal Appointment Assistant
 
-(https://virtual-clinic-app.netlify.app/)
+https://virtual-clinic-app.netlify.app/
 
 
 An intelligent, full-stack application designed to empower patients by helping them prepare for their medical consultations.
